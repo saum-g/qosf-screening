@@ -38,7 +38,7 @@ def find_dist(layers,seed,target_phi,max_iter,lr=0.1):
 
 	# layers=2
 	params=np.random.rand(layers*8,1)*2*np.pi
-	print(params)
+	# print(params)
 
 	iter=1
 
@@ -99,7 +99,7 @@ def find_dist(layers,seed,target_phi,max_iter,lr=0.1):
 
 np.random.seed(0)
 
-target_phi=np.random.rand(16,1)
+target_phi=np.random.rand(16)
 target_phi/=np.linalg.norm(target_phi)
 
 print(target_phi)
@@ -107,16 +107,16 @@ print(target_phi)
 
 obtained_distances=[]
 
-no_layers=5
+no_layers=10
 
 
-for layers in range(5):
+for layers in range(no_layers):
 	print("\n\n\n\n"+"*"*10+"Starting trial for layers=",layers+1,"*"*10)
 
 	min_dist=float('inf')
 	for seed in range(10):
 		print("\n\n"+"="*10+"Seed=",seed,"="*10)
-		dist=find_dist(layers+1,seed,target_phi,500,0.1)
+		dist=find_dist(layers+1,seed,target_phi,500,0.5)
 		if dist<min_dist:
 			min_dist=dist
 
@@ -132,6 +132,8 @@ for i in range(no_layers):
 	layers_list.append(i+1)
 
 plt.plot(layers_list,obtained_distances)
+plt.xlabel('No of layers')
+plt.ylabel('Least distance achieved')
 plt.show()
 
 
