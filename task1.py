@@ -3,13 +3,16 @@ from qiskit.circuit import ParameterVector
 import numpy as np
 import matplotlib.pyplot as plt
 
-def get_cost(params,target_phi,layers):
+def get_cost(params,target_phi,layers,ry=False):
 	# print(params)
 	qc=QuantumCircuit(4)
 	count=0
 	for l in range(layers):
 		for i in range(4):
-			qc.rx(params[count],i)
+			if ry:
+				qc.ry(params[count],i)
+			else:
+				qc.rx(params[count],i)
 			count+=1
 		for i in range(4):
 			qc.rz(params[count],i)
@@ -30,7 +33,7 @@ def get_cost(params,target_phi,layers):
 
 	return cost
 
-def find_dist(layers,seed,target_phi,max_iter,lr=0.1):
+def find_dist(layers,seed,target_phi,max_iter,lr=0.1,ry=False):
 	
 	# seed=0
 
@@ -48,7 +51,7 @@ def find_dist(layers,seed,target_phi,max_iter,lr=0.1):
 	while True:
 		print("\n\niter=",iter)
 		# lr=0.1
-		cost1=get_cost(params,target_phi,layers)
+		cost1=get_cost(params,target_phi,layers,ry)
 		print("cost=",cost1)
 		# print()
 		grad=np.zeros((layers*8,1))
@@ -61,7 +64,7 @@ def find_dist(layers,seed,target_phi,max_iter,lr=0.1):
 			new_params[i]+=delta
 			# print(new_params)
 
-			cost2=get_cost(new_params,target_phi,layers)
+			cost2=get_cost(new_params,target_phi,layers,ry)
 			# print(cost2-cost1)
 
 			grad[i]=(cost2-cost1)/delta
@@ -116,7 +119,7 @@ for layers in range(no_layers):
 	min_dist=float('inf')
 	for seed in range(10):
 		print("\n\n"+"="*10+"Seed=",seed,"="*10)
-		dist=find_dist(layers+1,seed,target_phi,500,0.5)
+		dist=find_dist(layers+1,seed,target_phi,500,0.5,False)
 		if dist<min_dist:
 			min_dist=dist
 
