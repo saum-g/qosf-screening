@@ -100,15 +100,16 @@ def find_dist(layers,seed,target_phi,max_iter,lr=0.1,ry=False):
 
 
 
-np.random.seed(0)
+# np.random.seed(0)
 
-target_phi=np.random.rand(16)
-target_phi/=np.linalg.norm(target_phi)
+# target_phi=np.random.rand(16)
+# target_phi/=np.linalg.norm(target_phi)
 
-print(target_phi)
+# print(target_phi)
 
 
 obtained_distances=[]
+
 
 no_layers=10
 
@@ -116,16 +117,34 @@ no_layers=10
 for layers in range(no_layers):
 	print("\n\n\n\n"+"*"*10+"Starting trial for layers=",layers+1,"*"*10)
 
-	min_dist=float('inf')
-	for seed in range(10):
-		print("\n\n"+"="*10+"Seed=",seed,"="*10)
-		dist=find_dist(layers+1,seed,target_phi,500,0.5,False)
-		if dist<min_dist:
-			min_dist=dist
+	avg_dist=0
+
+	for target_seed in range(4):
+
+		print("\n\n\n"+"#"*10+"Target with seed: ",target_seed,"#"*10)
+
+		np.random.seed(target_seed)
+
+		target_phi=np.random.rand(16)
+		target_phi/=np.linalg.norm(target_phi)
+
+		print(target_phi)
+
+		min_dist=float('inf')
+		for seed in range(10):
+			print("\n\n"+"="*10+"Seed=",seed,"="*10)
+			dist=find_dist(layers+1,seed,target_phi,500,0.5,False)
+			if dist<min_dist:
+				min_dist=dist
 
 
-	print("min_dist found=",min_dist)
-	obtained_distances.append(min_dist)
+		print("min_dist found=",min_dist)
+		avg_dist+=min_dist
+		# obtained_distances.append(min_dist)
+
+	avg_dist/=4
+	print("\n\navg_dist=",avg_dist)
+	obtained_distances.append(avg_dist)
 
 
 print(obtained_distances)
